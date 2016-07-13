@@ -1,0 +1,17 @@
+{
+  "manifest_version": 2,
+  "name": "future",
+  "description": "The future of browsing history",
+  "version": "0.1",
+  "permissions": [
+    "storage",
+    "tabs"
+  ],
+  "content_scripts": [
+    {
+      "run_at" :"document_end",
+      "matches": ["https://*/*","http://*/*"],
+      "js": ["app.js"]
+    }
+  ]
+}
