@@ -1,5 +1,5 @@
 //Save Google Queries to Database
-if(window.location.href.match(/www.google.com\/search/)){
+if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location.href.match(/www.google.[a-z\.]+\/.+#q=/g)){
   //Open connection to "future" database
   var openRequest = indexedDB.open("future",1);
   openRequest.onsuccess = function(e) {
@@ -7,7 +7,7 @@ if(window.location.href.match(/www.google.com\/search/)){
     var transaction = db.transaction(["searches"],"readwrite");
     var store = transaction.objectStore("searches");
     
-    var query = window.location.search.substr(1).split(/[\#\&]+/g)
+    var query = window.location.search.substr(1).split(/[\#\&]+/)
     var params = {}
     query.forEach(function(q){
       var qs = q.split("=")
@@ -30,7 +30,8 @@ if(window.location.href.match(/www.google.com\/search/)){
   for(var i = 0; i < as.length; i++){
     var a = as[i]
     a.addEventListener("click", function(){
-      console.log("you clicked", this.getAttribute('data-href'))
+      console.log("you clicked", this.getAttribute('data-href'));
+      console.log("with the page title", this.innerHTML);
     })
   }
 }
