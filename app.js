@@ -19,6 +19,10 @@ if(window.location.href.match(/www.google.com\/search/)){
 	thisDB.createObjectStore("searches")
     }
   }
+  openRequest.onerror = function(e) {
+    console.log("Database Error: " + e.target.errorCode);
+    console.log("Permission to create a database might not be enabled.");
+  }
   var as = document.querySelectorAll("a")
   for(var i = 0; i < as.length; i++){
     var a = as[i]
