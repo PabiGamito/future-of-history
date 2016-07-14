@@ -1,16 +1,19 @@
+//Save Google Queries to Database
 if(window.location.href.match(/www.google.com\/search/)){
+  //Open connection to "future" database
   var openRequest = indexedDB.open("future",1);
   openRequest.onsuccess = function(e) {
     db = e.target.result;
     var transaction = db.transaction(["searches"],"readwrite");
     var store = transaction.objectStore("searches");
-
-    var query = window.location.search.substr(1).split("&")
+    
+    var query = window.location.search.substr(1).split(/[\#\&]+/g)
     var params = {}
     query.forEach(function(q){
       var qs = q.split("=")
       params[qs[0]] = qs[1]
     })
+    //params.q => search query
     store.add({query:params.q, ts: new Date()},1)
   }
   openRequest.onupgradeneeded = function(e) {
