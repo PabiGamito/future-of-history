@@ -30,6 +30,10 @@ openRequest.onsuccess = function(e) {
     return daySearches
   }
 
+  getDaySearches().forEach(function(){
+    //Display all the search queries
+  })
+
 }
 openRequest.onupgradeneeded = function(e) {
   var thisDB = e.target.result

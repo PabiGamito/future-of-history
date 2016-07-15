@@ -7,10 +7,16 @@
     "storage",
     "tabs"
   ],
+  "browser_action": {
+    "default_icon": "icon.png"
+  },
+  "background": {
+    "scripts": ["background.js"]
+  },
   "content_scripts": [
     {
       "run_at" :"document_end",
-      "matches": ["https://*/*","http://*/*"],
+      "matches": ["*://*/*"],
       "js": ["app.js"]
     }
   ]

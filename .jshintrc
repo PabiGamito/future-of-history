@@ -3,5 +3,6 @@
   // See http://jshint.com/docs/ for more details
 
   // Ignored Warnings
+  "-W002": true, // ignore missing X-UA-Compatible
   "-W033": true   // ignore missing semi-columns
 }

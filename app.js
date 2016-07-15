@@ -11,7 +11,7 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
     var params = {}
     query.forEach(function(q){
       var qs = q.split("=")
-      params[qs[0]] = qs[1]
+      params[qs[0]] = qs[1].replace(/\+/g, " ")
     })
     //Add search query to database (params.q => search query)
     store.add({query:params.q, ts: new Date().getTime()})
