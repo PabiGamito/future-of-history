@@ -1,0 +1,56 @@
+/*NAVBAR*/
+nav {
+  position: fixed;
+  font-family: 'Ubuntu', sans-serif;
+  font-weight: 500;
+  font-size: 18px;
+  letter-spacing: -1px;
+  width: 90%;
+  /*max-width: 1080px;*/
+  padding: 25px;
+  left: 50%;
+  transform: translate(-50%);
+}
+nav::after {
+  background: #F4F4F1;
+  content: "";
+  display: block;
+  height: 1px;
+  position: absolute;
+  bottom: 2px;
+  left: 0;
+  width: 100%;
+}
+nav ul {
+  list-style-type: none;
+  text-align: center;
+  margin: 0;
+  padding: 0;
+}
+nav .nav-left {
+  float: left;
+}
+nav .nav-right {
+  float: right;
+}
+nav ul li {
+  float: left;
+}
+nav ul li a {
+  text-decoration:none;
+  color: inherit;
+  padding: 20px 0 20px 0;
+  margin: 0 20px 0 20px;
+}
+nav ul li a:hover {
+  color: #324493;
+  border-bottom: solid 3px #324493;
+}
+nav ul li a.active {
+  color: #324493;
+  border-bottom: solid 3px #324493;
+}
+#search {
+  color: #a6a8aa;
+  font-style: italic;
+}
