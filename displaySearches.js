@@ -1,5 +1,5 @@
 //Open connection to "future" database
-var openRequest = indexedDB.open("future",1)
+var openRequest = indexedDB.open("future", 1)
 openRequest.onsuccess = function(e) {
   db = e.target.result;
   var transaction = db.transaction(["searches"],"readwrite")
@@ -19,6 +19,7 @@ openRequest.onsuccess = function(e) {
 
     request.onsuccess = function(event) {
       var cursor = event.target.result
+        console.log(cursor)
       if( cursor ) {
       	daySearches.push( cursor.value )
       	cursor.continue()
@@ -28,6 +29,11 @@ openRequest.onsuccess = function(e) {
     }
 
     return daySearches
+  }
+
+  var request = store.get(1)
+  request.onsuccess = function(event) {
+      console.log(event.target.result)
   }
 
   getDaySearches().forEach(function(){

@@ -43,12 +43,11 @@ nav ul li a {
   margin: 0 20px 0 20px;
 }
 nav ul li a:hover {
-  color: #324493;
-  border-bottom: solid 3px #324493;
+  color: #303F9F;
 }
 nav ul li a.active {
-  color: #324493;
-  border-bottom: solid 3px #324493;
+  color: #303F9F;
+  border-bottom: solid 3px #303F9F;
 }
 #search {
   color: #a6a8aa;
