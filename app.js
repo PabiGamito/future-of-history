@@ -13,13 +13,14 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
       var qs = q.split("=")
       params[qs[0]] = qs[1]
     })
-    //params.q => search query
-    store.add({query:params.q, ts: new Date()})
+    //Add search query to database (params.q => search query)
+    store.add({query:params.q, ts: new Date().getTime()})
   }
   openRequest.onupgradeneeded = function(e) {
     var thisDB = e.target.result
     if(!thisDB.objectStoreNames.contains("searches")) {
-	     thisDB.createObjectStore("searches", { autoIncrement : true })
+      var searches = thisDB.createObjectStore("searches", { autoIncrement : true })
+      searches.createIndex("date", "ts")
     }
   }
   openRequest.onerror = function(e) {
