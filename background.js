@@ -66,14 +66,14 @@ chrome.runtime.onMessage.addListener(
         // Respond to data message requests
         if (request.get ==  "searches") {
           var d = new Date()
-          var upperBound = [d.getTime()]
+          var upperBound = d.getTime()
           d.setDate(d.getDate() - 1)
-          var lowerBound = [d.getTime()]
+          var lowerBound = d.getTime()
           var range = IDBKeyRange.bound(lowerBound, upperBound)
-          var transaction = db.transaction(["searches"],"readwrite")
+          var transaction = db.transaction(["searches"],"readonly")
           var store = transaction.objectStore("searches")
           var index = store.index("date")
-          var requestSearches = index.openCursor()
+          var requestSearches = index.openCursor(range)
 
           requestSearches.onsuccess = function(event) {
             getSearchData(event)
