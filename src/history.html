@@ -7,6 +7,7 @@
     <link rel="icon" href="img/icon.png">
     <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,500' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=PT+Mono' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/history.css">
   </head>
   <body >
@@ -19,7 +20,7 @@
               <li><a href="#searches" @click.prevent="activateTab('search')" :class="{'active': searchTabIsActive}">Searches</a></li>
             </ul>
             <ul class="nav-right">
-              <li>Delete history</li>
+              <li><a href="" class="btn-action"> Delete history </a></li>
             </ul>
           </nav>
           <section id="visited" v-show="visitedTabIsActive">
@@ -35,18 +36,41 @@
 
     <template id="searches">
         <div>
-          <section>
+          <section class="search">
             <ul class="search-list">
-              <li class="search-item" v-for="item in searches">
-                <span >{{ item.query }}</span><br>
-                <span>{{ formatTime(item.ts) }}</span>
+              <li class="search-item-header" v-for="(key,items) in searches">
+                <span class="date">{{ key }}</span>
+
+                <ul class="search-items">
+                  <li class="search-items-child" v-for="item in items">
+                    <span class="time">{{ item.time }}</span>
+                    <span class="query">{{ item.query }}</span>
+                    <span class="link_count">{{ item.openedLinks.length }}</span>
+                    <a href="#" @click.prevent="toggleShowLinkedList(item)" 
+                    class="btn-down show-links">
+                    <span class="fa fa-chevron-down" :class="{'fa-chevron-up': item.showLinkedList,'fa-chevron-down': !item.showLinkedList}"></span>
+                     </a>
+
+                     <ul v-show="item.showLinkedList" class="search-items-child-linked-list">
+                      <li v-for="link in item.openedLinks">
+                        <span class="title">{{ link.title }}</span>
+                        <a href="{{ link.link }}" class="url">{{ link.link }}</a>
+                      </li>
+                    </ul>
+                    
+                  </li>
+
+                  
+                </ul>
               </li>
+
             </ul>
         </section>
         </div>
     </template>
     <!-- JS Dependencies -->
     <script type="text/javascript" src="libs/jquery.min.js"></script>
+    <script type="text/javascript" src="libs/lodash.js"></script>
     <script type="text/javascript" src="libs/vue.js"></script>
     <script type="text/javascript" src="libs/moment.min.js"></script>
     <!-- JS App Files -->
