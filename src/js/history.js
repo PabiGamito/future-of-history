@@ -1,18 +1,8 @@
-requestSearchesFromIndexedDB()
+Vue.filter('format_time', function (ts) {
+  return moment.unix(ts/1000).calendar()
+})
 
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    if (request.for == "history") {
-      if (request.searches){
-        // Add loaded searches to page (default: past day searches)
-        displaySearches(request)
-      }
-    }
-  }
-)
-
-// README: Add the following code back in if needed
-/*var SearchesComponent = {
+var SearchesComponent = {
   template: '#searches',
   data: function(){
     return {
@@ -41,11 +31,13 @@ chrome.runtime.onMessage.addListener(
       });
 
     },
-    formatTime: function(ts){
-      return moment.unix(ts/1000).calendar()
+    toggleShowLinkedList: function(item){
+      item.showLinkedList = !item.showLinkedList;
     }
   }
-}*/
+}
+
+
 
 
 new Vue({
@@ -73,35 +65,26 @@ new Vue({
   })
 
 
-function requestSearchesFromIndexedDB(){
+
+function fetchSearchesFromIndexDB(offset,limit,callback){
   chrome.runtime.sendMessage(
-    {for: "background", database: "get", get: "searches"},
+    {for: "background", action: "get", get: "searches"},
     function(response) {
-      // Can't use response returns as undefined instead uses onMessage to receive data
+      if (response.searches){
+
+          var data = response.searches;
+          data = _.groupBy( _.each(data,function(item,index){
+            item.day = moment(item.ts).format('DD.MM.YYYY');
+            item.time = moment(item.ts).format('h:mm');
+            item.showLinkedList = false;
+          }),'day');
+
+          callback(null,data);
+          return;
+      }
+
+      callback({error: 'failed to fetch Searches'});
+
     }
   )
-}
-
-function displaySearches(request){
-  request.searches.reverse().forEach(function(searchData) {
-    var searchQuery = searchData.query
-    var formattedTime = moment.unix(searchData.ts/1000).calendar()
-    var link = searchData.href
-    var links = searchData.openedLinks
-    // TODO: add to page based on how html is coded
-    $("body").append("<p>"+formattedTime+": <a href='"+link+"'>"+searchQuery+"</a></p>")
-    links.forEach(function(linkData){
-      var href = linkData.link
-      var title = linkData.title
-      // TODO: add to page based on how html is coded
-      // TODO: "Merge" same links together and add small badge with number of times opened next to it if opened more than once.
-      $("body").append("<a href='"+href+"'>"+title+"</a><br>")
-    })
-    console.log(searchData)
-  })
-}
-
-function addSearches(){
-  // TODO: Make sure it doesn't add duplicates and does not skip some
-  // Runs on load more request from user
 }
