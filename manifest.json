@@ -22,8 +22,6 @@
       "matches": ["*://*/*"],
       "js": [
         "src/libs/jquery.min.js",
-        "src/libs/vue.js",
-        "src/libs/moment.min.js",
         "src/js/app.js"
       ]
     }
