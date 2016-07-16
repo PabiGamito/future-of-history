@@ -22,7 +22,7 @@ Not only is this a different approach to browsing our own content, it is now pos
 
 In order to re-create our experience — or to just see the overall topics of our interests — it would be useful to provide users with a list of past searches. Once you clicked a particular search result, it would expand with visited links based on that very query, and would redirect you to the map with the highlighted path.
 
-![](https://cdn-images-1.medium.com/max/1200/1*JWNh_v_kncFY_uKErFA-NQ.png)
+![](https://cdn-images-1.medium.com/max/1200/1*pjWiF_6l3OYfi4tga0k0bQ.gif)
 
 ### Analytics
 
