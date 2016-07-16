@@ -1,5 +1,5 @@
 //Open connection to "future" database
-var openRequest = indexedDB.open("future", 1)
+var openRequest = indexedDB.open("history", 1)
 openRequest.onsuccess = function(e) {
   db = e.target.result;
   var transaction = db.transaction(["searches"],"readwrite")
