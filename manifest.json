@@ -11,13 +11,18 @@
     "default_icon": "icon.png"
   },
   "background": {
-    "scripts": ["background.js"]
+    "scripts": [
+      "background.js"
+    ]
   },
   "content_scripts": [
     {
       "run_at" :"document_end",
       "matches": ["*://*/*"],
-      "js": ["app.js"]
+      "js": [
+        "jquery.min.js",
+        "app.js"
+      ]
     }
   ]
 }

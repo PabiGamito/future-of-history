@@ -3,5 +3,6 @@
   // See http://jshint.com/docs/ for more details
 
   // Ignored Warnings
+  "-W004": true,  // ignore variable is already defined
   "-W033": true   // ignore missing semi-columns
 }
