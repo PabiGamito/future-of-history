@@ -39,23 +39,30 @@ chrome.runtime.onMessage.addListener(
           // adds search query and ts to database
           var transaction = db.transaction(["searches"],"readwrite")
           var store = transaction.objectStore("searches")
-          var storeQuery = store.add( {query: request.query, ts: request.ts, openedLinks: []} )
+          var storeQuery = store.add( {query: request.query, ts: request.ts, href: request.href, openedLinks: []} )
           storeQuery.onsuccess = function(event){
-            sendResponse({key: event.target.result})
-            console.log("Search query added to database")
+            console.log("Request to add search query to database from tab #"+sender.tab.id+" successful")
+            chrome.tabs.sendMessage(sender.tab.id, {for: "content", key: event.target.result})
           }
-        } else if (request.store == "search-link") {
+        } else if (request.store == "searchLink") {
           // adds links clicked on to record containing matching search query
           var transaction = db.transaction(["searches"],"readwrite")
           var store = transaction.objectStore("searches")
           var lastQueryRequest = store.get(request.key)
           lastQueryRequest.onsuccess = function(event) {
-            var openedLinks = lastQueryRequest.result.openedLinks
+            var data = lastQueryRequest.result
+            addLinks(data)
+          }
+          function addLinks(data) {
             // TODO: Store time spent on the specific page
-            openedLinks.push({
+            console.log("before", data.openedLinks)
+            data.openedLinks.push({
               link: request.link,
               title: request.title
             })
+            console.log("after", data.openedLinks)
+            var update = store.put(data, request.key)
+            console.log(update)
             console.log("Links added to search query record")
           }
         }
@@ -88,7 +95,7 @@ chrome.runtime.onMessage.addListener(
             	searchData.push( data )
             	cursor.continue()
             } else {
-              console.log("Retreived all searche data", searchData)
+              console.log("Retreived all search data", searchData)
               chrome.runtime.sendMessage(
                 {for: "history", searches: searchData}
               )
