@@ -1,3 +1,7 @@
+Vue.filter('format_time', function (ts) {
+  return moment.unix(ts/1000).calendar()
+})
+
 var SearchesComponent = {
   template: '#searches',
   data: function(){
@@ -27,8 +31,8 @@ var SearchesComponent = {
       });
 
     },
-    formatTime: function(ts){
-      return moment.unix(ts/1000).calendar()
+    toggleShowLinkedList: function(item){
+      item.showLinkedList = !item.showLinkedList;
     }
   }
 }
@@ -67,7 +71,15 @@ function fetchSearchesFromIndexDB(offset,limit,callback){
     {for: "background", action: "get", get: "searches"},
     function(response) {
       if (response.searches){
-          callback(null,response.searches);
+
+          var data = response.searches;
+          data = _.groupBy( _.each(data,function(item,index){
+            item.day = moment(item.ts).format('DD.MM.YYYY');
+            item.time = moment(item.ts).format('h:mm');
+            item.showLinkedList = false;
+          }),'day');
+
+          callback(null,data);
           return;
       }
 

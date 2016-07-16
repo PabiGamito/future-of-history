@@ -72,13 +72,24 @@ function handleRequestForStorage(request,sendResponse){
           var store = transaction.objectStore("searches")
           var lastQueryRequest = store.get(request.key)
           lastQueryRequest.onsuccess = function(event) {
-            var openedLinks = lastQueryRequest.result.openedLinks
+            var data = lastQueryRequest.result;
+            
             // TODO: Store time spent on the specific page
-            openedLinks.push({
+            data.openedLinks.push({
               link: request.link,
               title: request.title
             })
-            console.log("Links added to search query record")
+
+              // Put this updated object back into the database.
+            var requestUpdate = store.put(data);
+
+            requestUpdate.onerror = function(event) {
+              console.log("Links failed to add to search query record")
+            };
+            requestUpdate.onsuccess = function(event) {
+              console.log("Links added to search query record")
+            };
+            
           }
 
         }
