@@ -28,11 +28,13 @@ openRequest.onsuccess = function(e) {
   db = e.target.result;
 }
 
-// Receive data for content pages to store in database
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.for == "background") {
+
       if (request.database == "store") {
+
+        // Receive data for content pages to store in database
         if (request.store == "search") {
           // adds search query and ts to database
           var transaction = db.transaction(["searches"],"readwrite")
@@ -57,45 +59,42 @@ chrome.runtime.onMessage.addListener(
             console.log("Links added to search query record")
           }
         }
-      }
-    }
-  }
-)
 
-// Send data to history page
-function getDaySearches() {
-  var daySearches = []
-  var d = new Date()
-  var upperBound = [d.getTime()]
-  d.setDate(d.getDate() - 1)
-  var lowerBound = [d.getTime()]
-  var range = IDBKeyRange.bound(lowerBound, upperBound)
-  var transaction = db.transaction(["searches"],"readwrite")
-  var store = transaction.objectStore("searches")
-  var index = store.index("date")
-  var requestSearches = index.openCursor()
+      } else if (request.database == "get") {
 
-  requestSearches.onsuccess = function(event) {
-    var cursor = event.target.result
-    if( cursor ) {
-    	daySearches.push( cursor.value )
-      console.log("cursor", cursor.value)
-    	cursor.continue()
-    } else {
-    	console.log('Retreived all searches from the past day')
-    }
-  }
-
-  return daySearches
-}
-
-// Get data message requests
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    if (request.for == "background") {
-      if (request.database == "get") {
+        // Send data to history page
+        // Respond to data message requests
         if (request.get ==  "searches") {
-          sendResponse({searches: getDaySearches()})
+          var d = new Date()
+          var upperBound = [d.getTime()]
+          d.setDate(d.getDate() - 1)
+          var lowerBound = [d.getTime()]
+          var range = IDBKeyRange.bound(lowerBound, upperBound)
+          var transaction = db.transaction(["searches"],"readwrite")
+          var store = transaction.objectStore("searches")
+          var index = store.index("date")
+          var requestSearches = index.openCursor()
+
+          requestSearches.onsuccess = function(event) {
+            getSearchData(event)
+          }
+
+          var searchData = []
+          // Get an array with all the data the cursor can go through
+          function getSearchData(event){
+            var cursor = event.target.result
+            if( cursor ) {
+              var data = cursor.value
+            	searchData.push( data )
+            	cursor.continue()
+            } else {
+              console.log("Retreived all searche data", searchData)
+              chrome.runtime.sendMessage(
+                {for: "history", searches: searchData}
+              )
+            }
+          }
+
         }
       }
     }
