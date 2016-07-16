@@ -9,11 +9,11 @@
     "contextMenus"
   ],
   "browser_action": {
-    "default_icon": "icon.png"
+    "default_icon": "src/img/icon.png"
   },
   "background": {
     "scripts": [
-      "background.js"
+      "src/js/background.js"
     ]
   },
   "content_scripts": [
@@ -21,8 +21,10 @@
       "run_at" :"document_end",
       "matches": ["*://*/*"],
       "js": [
-        "jquery.min.js",
-        "app.js"
+        "src/libs/jquery.min.js",
+        "src/libs/vue.js",
+        "src/libs/moment.min.js",
+        "src/js/app.js"
       ]
     }
   ]

@@ -11,7 +11,13 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
   var searchQuery = params.q
   
   chrome.runtime.sendMessage(
-    {for: "background", database: "store", store: "search", query: searchQuery, ts: new Date().getTime()},
+    {
+      for: "background", 
+      action: "store", 
+      store: "search", 
+      query: searchQuery, 
+      ts: new Date().getTime()
+    },
     function(response) {
       if(!response){
         console.log(chrome.runtime.lastError);
@@ -50,11 +56,10 @@ function sendClickAction(linkObj,key){
   console.log(linkObj);
 
   chrome.runtime.sendMessage(
-          {for: "background", database: "store", store: "search-link", key: key, title: linkObj.title, link: linkObj.link},
+          {for: "background", action: "store", store: "search-link", key: key, title: linkObj.title, link: linkObj.link},
           function(response) {
             console.log("Opened link ("+linkObj.link+") added to search query record")
           }
-        )
-  
+  ) 
 }
 

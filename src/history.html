@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History</title>
+    <link rel="icon" href="img/icon.png">
+    <link href='https://fonts.googleapis.com/css?family=Ubuntu:400,500' rel='stylesheet' type='text/css'>
+    <link href='https://fonts.googleapis.com/css?family=PT+Mono' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/history.css">
+  </head>
+  <body >
+    <div id="app">
+          <nav>
+            <ul class="nav-left">
+              <li id="search">Search</li>
+              <li><a href="#visited" @click.prevent="activateTab('visited')" :class="{'active': visitedTabIsActive}">Visited</a></li>
+              <li><a href="#analytics" @click.prevent="activateTab('analytics')" :class="{'active': analyticsTabIsActive}">Analytics</a></li>
+              <li><a href="#searches" @click.prevent="activateTab('search')" :class="{'active': searchTabIsActive}">Searches</a></li>
+            </ul>
+            <ul class="nav-right">
+              <li>Delete history</li>
+            </ul>
+          </nav>
+          <section id="visited" v-show="visitedTabIsActive">
+
+          </section>
+          <section id="analytics" v-show="analyticsTabIsActive">
+
+          </section>
+
+          <search-component v-show="searchTabIsActive"></search-component>
+          
+    </div>
+
+    <template id="searches">
+        <div>
+          <section>
+            <ul class="search-list">
+              <li class="search-item" v-for="item in searches">
+                <span >{{ item.query }}</span><br>
+                <span>{{ formatTime(item.ts) }}</span>
+              </li>
+            </ul>
+        </section>
+        </div>
+    </template>
+    <!-- JS Dependencies -->
+    <script type="text/javascript" src="libs/jquery.min.js"></script>
+    <script type="text/javascript" src="libs/vue.js"></script>
+    <script type="text/javascript" src="libs/moment.min.js"></script>
+    <!-- JS App Files -->
+    <script type="text/javascript" src="js/history.js"></script>
+    <!--<script type="text/javascript" src="js/displaySearches.js"></script>-->
+  </body>
+</html>

@@ -1,6 +1,6 @@
 //Open history page when chrome extension browerAction icon is clicked on
 chrome.browserAction.onClicked.addListener(function(){
-  chrome.tabs.create({'url': chrome.extension.getURL('history.html')}, function(tab) {
+  chrome.tabs.create({'url': chrome.extension.getURL('src/history.html')}, function(tab) {
     // Tab opened.
   })
 })
@@ -10,6 +10,8 @@ chrome.browserAction.onClicked.addListener(function(){
 var openRequest = indexedDB.open("history", 1)
 // Define global variables
 var db
+var searchData = []
+
 // Run migrations if necessary
 openRequest.onupgradeneeded = function(e) {
   var thisDB = e.target.result
@@ -18,11 +20,13 @@ openRequest.onupgradeneeded = function(e) {
     searches.createIndex("date", "ts")
   }
 }
+
 // Error handling
 openRequest.onerror = function(e) {
   console.log("Database Error: " + e.target.errorCode)
   console.log("Permission to create a database might not be enabled.")
 }
+
 // Once connected successfully to database
 openRequest.onsuccess = function(e) {
   db = e.target.result;
@@ -33,28 +37,25 @@ chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.for == "background") {
 
-      if (request.database == "get") {
-
-        if (request.get == "searches") {
+      if (request.action == "get") {
         
-          var d = new Date()
-          var upperBound = d.getTime()
-          d.setDate(d.getDate() - 1)
-          var lowerBound = d.getTime()
-          var range = IDBKeyRange.bound(lowerBound, upperBound)
-          var transaction = db.transaction(["searches"],"readonly")
-          var store = transaction.objectStore("searches")
-          var index = store.index("date")
-          var requestSearches = index.openCursor(range)
+        handleRequestForRetrieval(request,sendResponse);
 
-          requestSearches.onsuccess = function(event) {
-            getSearchData(event,sendResponse)
-          }
+      } else if (request.action == "store") {
 
-        }
+        handleRequestForStorage(request,sendResponse);
 
-      } else if (request.database == "store") {
+      }
+    }
 
+    return true;
+  }
+
+
+)
+
+
+function handleRequestForStorage(request,sendResponse){
         if (request.store == "search") {
           // adds search query and ts to database
           var transaction = db.transaction(["searches"],"readwrite")
@@ -81,28 +82,48 @@ chrome.runtime.onMessage.addListener(
           }
 
         }
+}
 
-      }
-    }
 
-    return true;
-  }
-)
+function handleRequestForRetrieval(request,sendResponse){
+       if (request.get == "searches") {
+          var d = new Date()
+          var upperBound = d.getTime()
+          d.setDate(d.getDate() - 1)
+          var lowerBound = d.getTime()
+          var range = IDBKeyRange.bound(lowerBound, upperBound)
+          var transaction = db.transaction(["searches"],"readonly")
+          var store = transaction.objectStore("searches").openCursor().onsuccess = function(event) {
+            getSearchData(event,sendResponse)
+          }
+          // var index = store.index("date")
+          // var requestSearches = index.openCursor(range)
 
+          // requestSearches.onsuccess = function(event) {
+          //   getSearchData(event,sendResponse)
+          // }
+
+        }
+
+}
 
 // Get an array with all the data the cursor can go through
 function getSearchData(event,sendResponse){
-  var searchData = []
-
+  
   var cursor = event.target.result
+  
   if( cursor ) {
     var data = cursor.value
-    searchData.push( data )
+    console.log(data);
+
+    searchData.push( JSON.parse(JSON.stringify(data)))
+    
     cursor.continue()
   } else {
     console.log("Retreived all searche data", searchData)
-    sendResponse({searches: getDaySearches()})
+    sendResponse({searches: searchData})
   }
+
 }
 
 
