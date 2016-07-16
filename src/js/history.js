@@ -15,8 +15,7 @@ Vue.filter('format_time', function (ts) {
   return moment.unix(ts/1000).calendar()
 })
 
-// README: Add the following code back in if needed
-/*var SearchesComponent = {
+var SearchesComponent = {
   template: '#searches',
   data: function(){
     return {
@@ -43,7 +42,7 @@ Vue.filter('format_time', function (ts) {
       return moment.unix(ts/1000).calendar()
     }
   }
-}*/
+}
 
 
 new Vue({
