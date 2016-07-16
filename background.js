@@ -7,7 +7,7 @@ chrome.browserAction.onClicked.addListener(function(){
 
 // DATABASE
 // Open connection to "hisotry" database
-var openRequest = indexedDB.open("hisotry", 1)
+var openRequest = indexedDB.open("history", 1)
 // Define global variables
 var db
 // Run migrations if necessary
@@ -32,7 +32,11 @@ openRequest.onsuccess = function(e) {
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.for == "background") {
-      if (request.database == "store") {
+      if (request.database == "get") {
+        if (request.get ==  "searches") {
+          sendResponse({searches: getDaySearches()})
+        }
+      } else if (request.database == "store") {
         if (request.store == "search") {
           // adds search query and ts to database
           var transaction = db.transaction(["searches"],"readwrite")
@@ -59,6 +63,8 @@ chrome.runtime.onMessage.addListener(
         }
       }
     }
+
+    return true;
   }
 )
 
@@ -89,15 +95,52 @@ function getDaySearches() {
   return daySearches
 }
 
-// Get data message requests
-chrome.runtime.onMessage.addListener(
-  function(request, sender, sendResponse) {
-    if (request.for == "background") {
-      if (request.database == "get") {
-        if (request.get ==  "searches") {
-          sendResponse({searches: getDaySearches()})
+function onRequest(request, sender, callback){ 
+
+   if(request.action == 'ListenOnContextMenuAction'){
+        
+        var links = request.links;
+        var key = request.key;
+
+        chrome.contextMenus.onClicked.addListener(function(object,tab){
+        
+        if(object.hasOwnProperty('linkUrl')){
+          
+          var link = links.filter(function(item){
+            return item.link == object.linkUrl || item.url == object.linkUrl;
+          }).pop();
+
+          if(link){
+            sendClickAction(link,key);
+          }
+
         }
-      }
-    }
-  }
-)
+
+      });
+      
+   }
+} 
+
+
+
+function sendClickAction(linkObj,key){
+  console.log(linkObj);
+
+        var transaction = db.transaction(["searches"],"readwrite")
+          var store = transaction.objectStore("searches")
+          var lastQueryRequest = store.get(key)
+          lastQueryRequest.onsuccess = function(event) {
+            var openedLinks = lastQueryRequest.result.openedLinks
+            // TODO: Store time spent on the specific page
+            openedLinks.push({
+              link: linkObj.link,
+              title: linkObj.title
+            })
+            console.log("Links added to search query record")
+          }
+  
+}
+
+
+//subscribe on request from content.js:
+chrome.extension.onRequest.addListener(onRequest);

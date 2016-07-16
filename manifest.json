@@ -5,7 +5,8 @@
   "version": "0.1",
   "permissions": [
     "storage",
-    "tabs"
+    "tabs",
+    "contextMenus"
   ],
   "browser_action": {
     "default_icon": "icon.png"
