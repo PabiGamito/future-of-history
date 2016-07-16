@@ -53,3 +53,7 @@ nav ul li a.active {
   color: #a6a8aa;
   font-style: italic;
 }
+
+section {
+    padding-top: 100px;
+}
