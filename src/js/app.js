@@ -99,9 +99,3 @@ function sendClickAction(linkObj,key){
           }
   )
 }
-<<<<<<< HEAD
-
-
-
-=======
->>>>>>> 47beba3f32d730e2b310b233b2009264f3babc81
