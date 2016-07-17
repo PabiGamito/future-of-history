@@ -37,6 +37,12 @@
     <template id="searches">
         <div>
           <section class="search">
+
+            <div class="empty-search text-muted" v-show="noSearchesFound">
+                <div class="fa fa-file-o fa-5x"></div>
+                <span>No Search Queries captured yet</span>
+            </div>
+
             <ul class="search-list">
               <li class="search-item-header" v-for="(key,items) in searches">
                 <span class="date">{{ key }}</span>

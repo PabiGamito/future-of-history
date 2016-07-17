@@ -6,7 +6,7 @@ var SearchesComponent = {
   template: '#searches',
   data: function(){
     return {
-      searches: []
+      searches: {}
     }
   },
   ready: function(){
@@ -33,6 +33,11 @@ var SearchesComponent = {
     },
     toggleShowLinkedList: function(item){
       item.showLinkedList = !item.showLinkedList;
+    }
+  },
+  computed: {
+    noSearchesFound: function(){
+      return _.isEmpty(this.searches);
     }
   }
 }

@@ -189,3 +189,17 @@ li.search-items-child ul.search-items-child-linked-list li a.url {
 li.search-items-child ul.search-items-child-linked-list li {
     margin-bottom: 10px;
 }
+
+.empty-search {
+    text-align: center;
+    margin-top: 40px;
+}
+
+.empty-search div.fa {
+    display: block;
+    margin-bottom: 20px;
+}
+
+.text-muted {
+    color: rgba(0,0,0,0.4);
+}
