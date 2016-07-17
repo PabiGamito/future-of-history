@@ -1,189 +1,117 @@
-//Open history page when chrome extension browerAction icon is clicked on
+/* 
+
+  INITIALIZE DB CODE
+
+  using Dexie IndexedDB Lib
+  @see https://github.com/dfahlander/Dexie.js/wiki/API-Reference
+
+ */
+
+var DB = new Dexie('FutureHistory');
+
+DB.version(1).stores({
+  searches: "++id,query,ts,openedLinks"
+});
+
+DB.open().catch(function(error){
+  console.log(error);
+});
+
+
+/* INITIALIZE CHROME API LISTENERS */
+
 chrome.browserAction.onClicked.addListener(function(){
   chrome.tabs.create({'url': chrome.extension.getURL('src/history.html')}, function(tab) {
     // Tab opened.
   })
-})
-
-// DATABASE
-// Open connection to "hisotry" database
-var openRequest = indexedDB.open("history", 1)
-// Define global variables
-var db
-var searchData = []
-
-// Run migrations if necessary
-openRequest.onupgradeneeded = function(e) {
-  var thisDB = e.target.result
-  if(!thisDB.objectStoreNames.contains("searches")) {
-    var searches = thisDB.createObjectStore("searches", { autoIncrement : true })
-    searches.createIndex("date", "ts")
-  }
-}
-
-// Error handling
-openRequest.onerror = function(e) {
-  console.log("Database Error: " + e.target.errorCode)
-  console.log("Permission to create a database might not be enabled.")
-}
-
-// Once connected successfully to database
-openRequest.onsuccess = function(e) {
-  db = e.target.result;
-}
+});
 
 chrome.runtime.onMessage.addListener(
-
   function(request, sender, sendResponse) {
     if (request.for == "background") {
 
-      if (request.action == "get") {
-        
-        handleRequestForRetrieval(request,sendResponse);
-
-      } else if (request.action == "store") {
-
-        handleRequestForStorage(request,sendResponse);
-
+      switch (request.action) {
+        case "get":
+          handleRequestForRetrieval(request,sendResponse);
+          break;
+        case "store":
+          handleRequestForStorage(request,sendResponse);
+          break;
       }
+
     }
 
     return true;
-  }
+  });
 
-
-)
 
 
 function handleRequestForStorage(request,sendResponse){
-        if (request.store == "search") {
-          // adds search query and ts to database
-          var transaction = db.transaction(["searches"],"readwrite")
-          var store = transaction.objectStore("searches")
-          var storeQuery = store.add( {query: request.query, ts: request.ts, openedLinks: []} )
-          storeQuery.onsuccess = function(event){
-            sendResponse({key: event.target.result})
-            console.log("Search query added to database")
-          }
 
-        } else if (request.store == "search-link") {
-          // adds links clicked on to record containing matching search query
-          var transaction = db.transaction(["searches"],"readwrite")
-          var store = transaction.objectStore("searches")
-          var lastQueryRequest = store.get(request.key)
-          lastQueryRequest.onsuccess = function(event) {
-            var data = lastQueryRequest.result;
-            
-            // TODO: Store time spent on the specific page
-            data.openedLinks.push({
-              link: request.link,
-              title: request.title
-            })
+        switch (request.store) {
+          case "search":
+            var queryObject = {query: request.query, ts: request.ts, openedLinks: []};
+            var upperBound = parseInt(moment().format('x'))
+            var lowerBound = parseInt(moment().hours(0).minutes(0).seconds(0).format('x'))
 
-              // Put this updated object back into the database.
-            var requestUpdate = store.put(data);
+            DB.searches
+              .where('ts')
+              .between(lowerBound, upperBound)
+              .toArray()
+              .then(function (items) {
+                var query = items.filter(function(q){
+                  return q.query == queryObject.query;
+                }).pop();
 
-            requestUpdate.onerror = function(event) {
-              console.log("Links failed to add to search query record")
-            };
-            requestUpdate.onsuccess = function(event) {
-              console.log("Links added to search query record")
-            };
-            
-          }
+                if(!query){
+                  DB.searches.add(queryObject).then(function(response){
+                    sendResponse({key: response});
+                  });
+                }else{
+                  sendResponse({key: query.id});
+                }
+              });
 
-        }
+            break;
+
+          case "search-link":
+            DB.searches
+            .where('id')
+            .equals(request.key)
+            .first()
+            .then(function (data) {
+
+              data.openedLinks.push({
+                link: request.link,
+                title: request.title
+              })
+
+              DB.searches.update(data)
+
+            });
+            break;
+        
+          default:
+            return true;
+      }
 }
 
 
 function handleRequestForRetrieval(request,sendResponse){
        if (request.get == "searches") {
-          var d = new Date()
-          var upperBound = d.getTime()
-          d.setDate(d.getDate() - 1)
-          var lowerBound = d.getTime()
-          var range = IDBKeyRange.bound(lowerBound, upperBound)
-          var transaction = db.transaction(["searches"],"readonly")
-          var store = transaction.objectStore("searches").openCursor().onsuccess = function(event) {
-            getSearchData(event,sendResponse)
-          }
-          // var index = store.index("date")
-          // var requestSearches = index.openCursor(range)
 
-          // requestSearches.onsuccess = function(event) {
-          //   getSearchData(event,sendResponse)
-          // }
+          var upperBound = parseInt(moment().format('x'))
+          var lowerBound = parseInt(moment().subtract(1, 'days').format('x'))
+
+
+          DB.searches
+            .where('ts')
+            .between(lowerBound, upperBound)
+            .toArray()
+            .then(function (searches) {
+              sendResponse({searches: searches})
+            });
 
         }
 
 }
-
-// Get an array with all the data the cursor can go through
-function getSearchData(event,sendResponse){
-  
-  var cursor = event.target.result
-  
-  if( cursor ) {
-    var data = cursor.value
-    console.log(data);
-
-    searchData.push( JSON.parse(JSON.stringify(data)))
-    
-    cursor.continue()
-  } else {
-    console.log("Retreived all searche data", searchData)
-    sendResponse({searches: searchData})
-  }
-
-}
-
-
-function onRequest(request, sender, callback){ 
-
-   if(request.action == 'ListenOnContextMenuAction'){
-        
-        var links = request.links;
-        var key = request.key;
-
-        chrome.contextMenus.onClicked.addListener(function(object,tab){
-        
-        if(object.hasOwnProperty('linkUrl')){
-          
-          var link = links.filter(function(item){
-            return item.link == object.linkUrl || item.url == object.linkUrl;
-          }).pop();
-
-          if(link){
-            sendClickAction(link,key);
-          }
-
-        }
-
-      });
-      
-   }
-} 
-
-
-
-function sendClickAction(linkObj,key){
-  console.log(linkObj);
-
-  var transaction = db.transaction(["searches"],"readwrite")
-    var store = transaction.objectStore("searches")
-    var lastQueryRequest = store.get(key)
-    lastQueryRequest.onsuccess = function(event) {
-      var openedLinks = lastQueryRequest.result.openedLinks
-      // TODO: Store time spent on the specific page
-      openedLinks.push({
-        link: linkObj.link,
-        title: linkObj.title
-      })
-      console.log("Links added to search query record")
-    }
-  
-}
-
-
-//subscribe on request from content.js:
-chrome.extension.onRequest.addListener(onRequest);

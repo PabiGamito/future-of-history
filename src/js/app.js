@@ -23,21 +23,7 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
         console.log(chrome.runtime.lastError);
         return;
       }
-      var key = response.key
-      console.log("Created search query record #"+key)
-      // select all links on page to add to db on click
-      
-      var links = [];
-
-      $("a").each(function(index,item){
-        links.push({title: $(item).text(),link: $(item).attr('data-href'),url: item.href});
-      });
-
-
-      var requestData = {"action": "ListenOnContextMenuAction",links: links,key: key};
-        //send request to background script
-      chrome.extension.sendRequest(requestData);
-      
+      var key = response.key    
 
       $("a").on('click', function(){
         // on link click send message to add link to db
@@ -53,8 +39,7 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
 
 
 function sendClickAction(linkObj,key){
-  console.log(linkObj);
-
+ 
   chrome.runtime.sendMessage(
           {for: "background", action: "store", store: "search-link", key: key, title: linkObj.title, link: linkObj.link},
           function(response) {
