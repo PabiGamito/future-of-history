@@ -31,14 +31,14 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
       $("a").on('click', function(){
         // on link click send message to add link to db
         var linkTitle = $(this).text()
-        var link = $(this).attr('data-href')
+        var link = $(this).attr('data-href') || $(this).attr('href')
 
         sendClickAction({title: linkTitle,link: link},key);
         
       })
     }
   )
-  
+
 }
 
 
