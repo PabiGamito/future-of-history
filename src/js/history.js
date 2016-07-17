@@ -27,7 +27,7 @@ var SearchesComponent = {
         }
 
         _self.searches = items;
-      
+
       });
 
     },
@@ -72,12 +72,14 @@ new Vue({
 
 
 function fetchSearchesFromIndexDB(offset,limit,callback){
+  console.log("Requesting search data from background")
   chrome.runtime.sendMessage(
     {for: "background", action: "get", get: "searches"},
     function(response) {
       if (response.searches){
 
           var data = response.searches;
+          console.log("Received search data", data)
           data = _.groupBy( _.each(data,function(item,index){
             item.day = moment(item.ts).format('DD.MM.YYYY');
             item.time = moment(item.ts).format('h:mm');
