@@ -98,4 +98,5 @@ function sendClickAction(linkObj,key){
             console.log("Opened link ("+linkObj.link+") added to search query record")
           }
   )
+  
 }
