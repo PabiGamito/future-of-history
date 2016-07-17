@@ -1,13 +1,16 @@
 //It loaded page is a google search link
 if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location.href.match(/www.google.[a-z\.]+\/.+#q=/g)){
+  
   var uri = (window.location.search.substr(1)+window.location.hash)
   var dec = decodeURI(uri)
   var query = dec.split(/[\#\&]/g)
   var params = {}
+  
   query.forEach(function(q){
     var qs = q.split("=")
     params[qs[0]] = qs[1].replace(/\+/g, " ")
   })
+
   var searchQuery = params.q
   
   chrome.runtime.sendMessage(
@@ -35,6 +38,7 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
       })
     }
   )
+  
 }
 
 
