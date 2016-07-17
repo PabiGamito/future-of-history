@@ -33,11 +33,11 @@ chrome.runtime.onMessage.addListener(
 
       switch (request.action) {
         case "get":
-          console.log("Message is a request to get data from the database from ", sender)
+          console.log("Message is a request to get data from the database from ")
           handleRequestForRetrieval(request,sendResponse);
           break;
         case "store":
-          console.log("Message is a request to add data to the database from ", sender)
+          console.log("Message is a request to add data to the database from ")
           handleRequestForStorage(request,sendResponse);
           break;
       }
@@ -69,11 +69,11 @@ function handleRequestForStorage(request,sendResponse){
 
                 if(!query){
                   DB.searches.add(queryObject).then(function(response){
-                    console.log("Search query saved with key", key)
+                    console.log("Search query saved with key", response)
                     sendResponse({key: response});
                   });
                 }else{
-                  console.log("Search query already saved today with key", key)
+                  console.log("Search query already saved today with key", query.id)
                   sendResponse({key: query.id});
                 }
               });
