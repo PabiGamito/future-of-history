@@ -13,6 +13,7 @@
   },
   "background": {
     "scripts": [
+      "src/libs/lodash.js",
       "src/libs/moment.min.js",
       "src/libs/dexie.min.js",
       "src/js/background.js"
@@ -24,10 +25,6 @@
       "matches": ["*://*/*"],
       "js": [
         "src/libs/jquery.min.js",
-        "src/libs/dexie.min.js",
-        "src/libs/lodash.js",
-        "src/libs/vue.js",
-        "src/libs/moment.min.js",
         "src/js/app.js"
       ]
     }

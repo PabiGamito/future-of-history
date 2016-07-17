@@ -18,6 +18,8 @@ DB.open().catch(function(error){
 });
 
 
+var SearchQueryUrls = [];
+
 /* INITIALIZE CHROME API LISTENERS */
 
 chrome.browserAction.onClicked.addListener(function(){
@@ -29,7 +31,6 @@ chrome.browserAction.onClicked.addListener(function(){
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.for == "background") {
-
       switch (request.action) {
         case "get":
           handleRequestForRetrieval(request,sendResponse);
@@ -37,6 +38,10 @@ chrome.runtime.onMessage.addListener(
         case "store":
           handleRequestForStorage(request,sendResponse);
           break;
+        case "log_links":
+          handleRequestForLogLinks(request,sendResponse);
+        case "check_link":
+          handleRequestForCheckLink(request,sendResponse);    
       }
 
     }
@@ -44,6 +49,52 @@ chrome.runtime.onMessage.addListener(
     return true;
   });
 
+
+function handleRequestForLogLinks(request,sendResponse){
+  var links = request.links;
+  SearchQueryUrls = SearchQueryUrls.concat(links);
+}
+
+function handleRequestForCheckLink(request,sendResponse){
+  if(obj = isSearchQueryUrl(request.href)){
+
+     DB.searches
+        .where('id')
+        .equals( parseInt(obj.key)) 
+        .first()
+        .then(function (data) {
+          var link = obj.link || obj.url;
+
+          var item = _.find(data, ['link', link]);
+
+          if(typeof item == 'undefined'){
+
+            data.openedLinks.push({
+              link: link,
+              title: obj.title
+            })
+
+            DB.searches.update(obj.key,data)
+          
+          }
+
+        });
+  }
+}
+
+function isSearchQueryUrl(url){
+  console.log(url);
+
+  if(!SearchQueryUrls.length){
+    return false;
+  }
+
+  var items = SearchQueryUrls.filter(function(obj,index){
+    return obj.url == url || obj.link == url;
+  });
+
+  return items.length > 0 ? items.pop() : false;
+}
 
 
 function handleRequestForStorage(request,sendResponse){
