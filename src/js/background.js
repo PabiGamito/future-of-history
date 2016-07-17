@@ -77,16 +77,18 @@ function handleRequestForStorage(request,sendResponse){
           case "search-link":
             DB.searches
             .where('id')
-            .equals(request.key)
+            .equals( parseInt(request.key)) 
             .first()
             .then(function (data) {
+
+              console.log(data);
 
               data.openedLinks.push({
                 link: request.link,
                 title: request.title
               })
 
-              DB.searches.update(data)
+              DB.searches.update(request.key,data)
 
             });
             break;
