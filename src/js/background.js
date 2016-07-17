@@ -96,7 +96,7 @@ function handleRequestForStorage(request,sendResponse){
               })
 
               DB.searches.update(request.key,data)
-              console.log("Added link to search query record", title+" : "+link)
+              console.log("Added link to search query record", request.title+" : "+request.link)
 
             });
             break;
