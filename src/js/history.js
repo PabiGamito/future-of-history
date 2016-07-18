@@ -22,7 +22,7 @@ var SearchesComponent = {
       fetchSearchesFromIndexDB(offset,limit,function(error,items){
 
         if(error){
-          //TODO Shoe error alert
+          //TODO Show error alert
           return;
         }
 

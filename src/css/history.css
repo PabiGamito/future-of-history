@@ -110,7 +110,7 @@ li.search-items-child{
 }
 
 li.search-items-child:hover {
-    box-shadow: 0 0 5px rgba(0,0,0,0.5);
+    box-shadow: 0 0 10px rgba(0,0,0,0.2);
 }
 
 ul.search-items li.search-items-child {
@@ -120,7 +120,7 @@ ul.search-items li.search-items-child {
     padding: 13px 10px 10px 10px;
     -webkit-transition: all 0.2s;
     -moz-transition: all 0.2s;
-    transition: all 0.2s;
+    transition: all 0.2s ease 0.1s;
 }
 
 ul.search-items li.search-items-child span.time {
@@ -150,13 +150,15 @@ a.btn-down.show-links {
     cursor: pointer;
     -webkit-transition: all 0.2s;
     -moz-transition: all 0.2s;
-    transition: all 0.2s;
+    transition: all 0.2s ease 0.1s;
     position: absolute;
     right: 8px;
     top: 8px;
 }
 
-
+a.btn-down.show-links:hover {
+    padding: 4px;
+}
 
 li.search-items-child:hover a.btn-down.show-links,li.search-items-child:active a.btn-down.show-links {
     opacity: 1;

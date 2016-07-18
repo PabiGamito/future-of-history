@@ -174,7 +174,7 @@ function handleRequestForRetrieval(request,sendResponse){
          console.log("Database get request is to retreive search queries data")
 
           var upperBound = parseInt(moment().format('x'))
-          var lowerBound = parseInt(moment().subtract(1, 'days').format('x'))
+          var lowerBound = parseInt(moment().subtract(7, 'days').format('x'))
 
 
           DB.searches
@@ -182,7 +182,7 @@ function handleRequestForRetrieval(request,sendResponse){
             .between(lowerBound, upperBound)
             .toArray()
             .then(function (searches) {
-              sendResponse({searches: searches})
+              sendResponse({searches: searches.reverse()})
               console.log("Got searches and send data in response")
             });
 

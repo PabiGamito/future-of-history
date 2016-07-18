@@ -9,6 +9,7 @@
     <link href='https://fonts.googleapis.com/css?family=PT+Mono' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css">
     <link rel="stylesheet" href="css/history.css">
+    <link rel="stylesheet" href="css/animate.css">
   </head>
   <body >
     <div id="app">
@@ -57,7 +58,7 @@
                     <span class="fa fa-chevron-down" :class="{'fa-chevron-up': item.showLinkedList,'fa-chevron-down': !item.showLinkedList}"></span>
                      </a>
 
-                     <ul v-show="item.showLinkedList" class="search-items-child-linked-list">
+                     <ul v-show="item.showLinkedList" class="animated search-items-child-linked-list">
                       <li v-for="link in item.openedLinks">
                         <span class="title">{{ link.title }}</span>
                         <a href="{{ link.link }}" class="url">{{ link.link }}</a>
