@@ -32,29 +32,30 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
 
       console.log("Search query is or was saved in database with key", key)
 
-      SearchQueryUrls = [];
+      var SearchQueryUrls = [];
 
-      $('#rso .r a').each(function(index,value){
-        console.log(index+value)
+      var $searchLinks = $('#rso .r a')
+
+      $searchLinks.each(function(index,value){
         var url = $(value).attr('data-href');
-        if(!url){
-          url = value.href;
+        if (!url) {
+          url = $(value).attr('href')
         }
-
         SearchQueryUrls.push({
-            title: $(value).text(),
-            link: url,
-            url: url,
-            key: key
-          });
+          title: $(value).text(),
+          link: url,
+          url: url,
+          key: key
+        });
+        console.log("url", url, "tite", $(value).text(), "key", key, "arr", SearchQueryUrls)
 
       });
 
-      $("a").on('click', function(){
+      $searchLinks.on('click', function(){
           var linkTitle = $(this).text()
           var link = $(this).attr('data-href');
 
-          if(_.isEmpty(link)){
+          if(!link){
             link = this.href;
           }
 
@@ -62,6 +63,8 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
 
           sendClickAction({title: linkTitle,link: link},key);
       })
+
+      console.log("Attempting to log links", SearchQueryUrls)
 
       chrome.runtime.sendMessage(
       {
