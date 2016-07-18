@@ -1,3 +1,8 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
 /*NAVBAR*/
 nav {
   position: fixed;
@@ -13,6 +18,8 @@ nav {
     padding-bottom: 5px;
   left: 50%;
   transform: translate(-50%);
+  z-index: 1;
+  background-color: white;
 }
 nav::after {
   background: #F4F4F1;
