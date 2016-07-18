@@ -104,6 +104,7 @@ ul.search-list > li.search-item-header > span.date {
     font-weight: 500;
     display: block;
     margin-bottom: 10px;
+    margin-top: 10px;
 }
 
 ul.search-items {
