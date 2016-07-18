@@ -28,7 +28,7 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
         return;
       }
 
-      var key = response.key  
+      var key = response.key
 
       console.log("Search query is or was saved in database with key", key)
 
@@ -38,7 +38,7 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
         var url = $(value).attr('data-href');
         if(_.isEmpty(url)){
           url = value.href;
-        } 
+        }
 
         SearchQueryUrls.push({
             title: $(value).text(),
@@ -47,7 +47,7 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
             key: key
           });
 
-      });  
+      });
 
       $("a").on('click', function(){
           var linkTitle = $(this).text()
@@ -55,7 +55,7 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
 
           if(_.isEmpty(link)){
             link = this.href;
-          } 
+          }
 
           console.log("Attempting to add opened link to query record :", linkTitle + " : " + link)
 
@@ -64,12 +64,12 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
 
       chrome.runtime.sendMessage(
       {
-        for: "background", 
-        action: "log_links", 
+        for: "background",
+        action: "log_links",
         links: SearchQueryUrls
       },
       function(response) {
-        
+
       });
     }
   )
@@ -79,12 +79,12 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
 
 chrome.runtime.sendMessage(
     {
-      for: "background", 
-      action: "check_link", 
+      for: "background",
+      action: "check_link",
       href: window.location.href
     },
     function(response) {
-      
+
     }
 );
 
@@ -98,5 +98,5 @@ function sendClickAction(linkObj,key){
             console.log("Opened link ("+linkObj.link+") added to search query record")
           }
   )
-  
+
 }

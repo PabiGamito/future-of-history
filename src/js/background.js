@@ -17,7 +17,7 @@ DB.open().catch(function(error){
   console.log(error);
 });
 
-
+// Variable to store search query clickabled links in
 var SearchQueryUrls = [];
 
 /* INITIALIZE CHROME API LISTENERS */
@@ -36,17 +36,17 @@ chrome.runtime.onMessage.addListener(
 
       switch (request.action) {
         case "get":
-          console.log("Message is a request to get data from the database from ")
+          console.log("Message is a request to get data from the database")
           handleRequestForRetrieval(request,sendResponse);
           break;
         case "store":
-          console.log("Message is a request to add data to the database from ")
+          console.log("Message is a request to add data to the database")
           handleRequestForStorage(request,sendResponse);
           break;
         case "log_links":
           handleRequestForLogLinks(request,sendResponse);
         case "check_link":
-          handleRequestForCheckLink(request,sendResponse);    
+          handleRequestForCheckLink(request,sendResponse);
       }
 
     }
@@ -54,18 +54,20 @@ chrome.runtime.onMessage.addListener(
     return true;
   });
 
-
+// Adds all clickable links from searches to SearchQueryUrls
 function handleRequestForLogLinks(request,sendResponse){
   var links = request.links;
   SearchQueryUrls = SearchQueryUrls.concat(links);
 }
 
+// Checks request from content on load if loaded page belonged to possible clicked link
+// NOTE + TODO: This those not guaranty however that user got to site from a search...
 function handleRequestForCheckLink(request,sendResponse){
   if(obj = isSearchQueryUrl(request.href)){
 
      DB.searches
         .where('id')
-        .equals( parseInt(obj.key)) 
+        .equals( parseInt(obj.key))
         .first()
         .then(function (data) {
           var link = obj.link || obj.url;
@@ -80,7 +82,7 @@ function handleRequestForCheckLink(request,sendResponse){
             })
 
             DB.searches.update(obj.key,data)
-          
+
           }
 
         });
