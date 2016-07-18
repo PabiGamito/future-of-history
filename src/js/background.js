@@ -44,9 +44,13 @@ chrome.runtime.onMessage.addListener(
           handleRequestForStorage(request,sendResponse);
           break;
         case "log_links":
+          console.log("Message is a request to log links from search")
           handleRequestForLogLinks(request,sendResponse);
+          break;
         case "check_link":
+          console.log("Message is a request to check if link is from a search")
           handleRequestForCheckLink(request,sendResponse);
+          break;
       }
 
     }
@@ -58,6 +62,7 @@ chrome.runtime.onMessage.addListener(
 function handleRequestForLogLinks(request,sendResponse){
   var links = request.links;
   SearchQueryUrls = SearchQueryUrls.concat(links);
+  console.log("Logged all link", SearchQueryUrls)
 }
 
 // Checks request from content on load if loaded page belonged to possible clicked link
@@ -82,6 +87,8 @@ function handleRequestForCheckLink(request,sendResponse){
             })
 
             DB.searches.update(obj.key,data)
+
+            console.log("Clicked link", link, "added to database. Record saved", data)
 
           }
 

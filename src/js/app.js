@@ -34,9 +34,10 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
 
       SearchQueryUrls = [];
 
-      $('a').each(function(index,value){
+      $('#rso .r a').each(function(index,value){
+        console.log(index+value)
         var url = $(value).attr('data-href');
-        if(_.isEmpty(url)){
+        if(!url){
           url = value.href;
         }
 
@@ -74,9 +75,9 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
     }
   )
 
-}
+} //End if google search
 
-
+// Send message to check if current page link matches a search query. If so, link added to query record as opened link
 chrome.runtime.sendMessage(
     {
       for: "background",
