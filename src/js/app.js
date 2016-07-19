@@ -44,7 +44,6 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
         }
         console.log("Pushing search link", url, "to arr")
         SearchQueryUrls.push({
-          title: $(value).text(),
           link: url,
           url: url,
           key: key
@@ -88,7 +87,8 @@ chrome.runtime.sendMessage(
     {
       for: "background",
       action: "check_link",
-      href: window.location.href
+      href: window.location.href,
+      title: document.title
     },
     function(response) {
 
@@ -109,8 +109,8 @@ function sendClickAction(linkObj,key){
 }
 
 
-// TODO: add website to database
-link =
+// Adds website as a new history record in database
+
 chrome.runtime.sendMessage(
     {
       for: "background",
@@ -125,4 +125,5 @@ chrome.runtime.sendMessage(
     }
 );
 
-// TODO: Track time spend on website
+// TODO: Track time spend on a website. Time interval in which website was open, and time intervals when user was active on website
+// README: Check out TimeMe.js - https://github.com/jasonzissman/TimeMe.js

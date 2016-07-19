@@ -11,7 +11,7 @@ var DB = new Dexie('FutureHistory');
 
 DB.version(1).stores({
   searches: "++id,query,openedLinks,ts",
-  history: "++id,title,href,referrer,ts"
+  history: "++id,title,href,referrer,openedTS,closedTS,activeIntervals,"
 });
 
 DB.open().catch(function(error){
@@ -86,7 +86,7 @@ function handleRequestForCheckLink(request,sendResponse){
 
             data.openedLinks.push({
               link: link,
-              title: obj.title
+              title: request.title
             })
 
             DB.searches.update(obj.key,data)
@@ -120,7 +120,7 @@ function handleRequestForStorage(request,sendResponse){
         switch (request.store) {
           case "history":
             console.log("Database add request is to store a url as history")
-            var queryObject = {title: request.title, href: request.href, referrer: request.referrer, ts: new Date().getTime() }
+            var queryObject = {title: request.title, href: request.href, referrer: request.referrer, openedTS: new Date().getTime() }
 
             DB.history.add(queryObject).then(function(response){
               console.log("Link saved in history with key", response)
