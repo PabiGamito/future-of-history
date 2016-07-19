@@ -34,49 +34,57 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
 
       var SearchQueryUrls = [];
 
-      var $searchLinks = $('#rso .r a')
+      // Checks for search data to load before running stuff that uses searches data
+      var searchesLoaded = setInterval(function() {
+         if ($('#rso .r a').length >= 10) {
+            console.log("Searches have loaded")
+            var $searchLinks = $('#rso .r a')
+            console.log("Attempting to add all search links to array", $searchLinks)
+            $searchLinks.each(function(index,value){
+              var url = $(value).attr('data-href');
+              if (!url) {
+                url = $(value).attr('href')
+              }
+              console.log("Pushing search link", url, "to arr")
+              SearchQueryUrls.push({
+                link: url,
+                url: url,
+                key: key
+              });
 
-      console.log("Attempting to add all search links to array", $searchLinks)
-      $searchLinks.each(function(index,value){
-        var url = $(value).attr('data-href');
-        if (!url) {
-          url = $(value).attr('href')
-        }
-        console.log("Pushing search link", url, "to arr")
-        SearchQueryUrls.push({
-          link: url,
-          url: url,
-          key: key
-        });
+            });
 
-      });
+            $searchLinks.on('click', function(){
+                var linkTitle = $(this).text()
+                var link = $(this).attr('data-href');
 
-      $searchLinks.on('click', function(){
-          var linkTitle = $(this).text()
-          var link = $(this).attr('data-href');
+                if(!link){
+                  link = this.href;
+                }
 
-          if(!link){
-            link = this.href;
-          }
+                console.log("Attempting to add opened link to query record :", linkTitle + " : " + link)
 
-          console.log("Attempting to add opened link to query record :", linkTitle + " : " + link)
+                sendClickAction({title: linkTitle,link: link},key);
+            })
 
-          sendClickAction({title: linkTitle,link: link},key);
-      })
+            console.log("Attempting to log links", SearchQueryUrls)
 
-      console.log("Attempting to log links", SearchQueryUrls)
+            chrome.runtime.sendMessage(
+            {
+              for: "background",
+              action: "log_links",
+              links: SearchQueryUrls
+            },
+            function(response) {
+              if (response.saved) {
+                console.log("Saved link as seached for link")
+              }
+            });
 
-      chrome.runtime.sendMessage(
-      {
-        for: "background",
-        action: "log_links",
-        links: SearchQueryUrls
-      },
-      function(response) {
-        if (response.saved) {
-          console.log("Saved link as seached for link")
-        }
-      });
+            clearInterval(searchesLoaded)
+         }
+      }, 10); // check every 10ms
+
     }
   )
 
