@@ -10,7 +10,8 @@
 var DB = new Dexie('FutureHistory');
 
 DB.version(1).stores({
-  searches: "++id,query,ts,openedLinks"
+  searches: "++id,query,openedLinks,ts",
+  history: "++id,title,href,referrer,ts"
 });
 
 DB.open().catch(function(error){
@@ -22,12 +23,14 @@ var SearchQueryUrls = [];
 
 /* INITIALIZE CHROME API LISTENERS */
 
+// Listen for browserAction button icon click to open history.html in new tab
 chrome.browserAction.onClicked.addListener(function(){
   chrome.tabs.create({'url': chrome.extension.getURL('src/history.html')}, function(tab) {
     // History opened in new tab
   })
 });
 
+// Listen for message request from other parts of the extension
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
     if (request.for == "background") {
@@ -115,6 +118,15 @@ function isSearchQueryUrl(url){
 function handleRequestForStorage(request,sendResponse){
 
         switch (request.store) {
+          case "history":
+            console.log("Database add request is to store a url as history")
+            var queryObject = {title: request.title, href: request.href, referrer: request.referrer, ts: new Date().getTime() }
+
+            DB.history.add(queryObject).then(function(response){
+              console.log("Link saved in history with key", response)
+              sendResponse({stored: true, key: response});
+            });
+            break;
           case "search":
             console.log("Database add request is to store search query")
             var queryObject = {query: request.query, ts: request.ts, openedLinks: []};

@@ -107,3 +107,22 @@ function sendClickAction(linkObj,key){
   )
 
 }
+
+
+// TODO: add website to database
+link =
+chrome.runtime.sendMessage(
+    {
+      for: "background",
+      action: "store",
+      store: "history",
+      title: document.title,
+      href: window.location.href,
+      referrer: document.referrer
+    },
+    function(response) {
+
+    }
+);
+
+// TODO: Track time spend on website
