@@ -88,7 +88,8 @@ chrome.runtime.sendMessage(
       for: "background",
       action: "check_link",
       href: window.location.href,
-      title: document.title
+      title: document.title,
+      referrer: document.referrer
     },
     function(response) {
 

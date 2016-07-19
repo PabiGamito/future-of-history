@@ -11,7 +11,7 @@ var DB = new Dexie('FutureHistory');
 
 DB.version(1).stores({
   searches: "++id,query,openedLinks,ts",
-  history: "++id,title,href,referrer,openedTS,closedTS,activeIntervals,"
+  history: "++id,title,href,referrer,openedTS,closedTS,activeIntervals"
 });
 
 DB.open().catch(function(error){
@@ -71,8 +71,8 @@ function handleRequestForLogLinks(request,sendResponse){
 // Checks request from content on load if loaded page belonged to possible clicked link
 // NOTE + TODO: This those not guaranty however that user got to site from a search...
 function handleRequestForCheckLink(request,sendResponse){
-  if(obj = isSearchQueryUrl(request.href)){
-
+  if( obj = isSearchQueryUrl(request.href) && request.referrer.match(/google.[a-z\.]/g) ){
+    console.log("Link appear to be from search")
      DB.searches
         .where('id')
         .equals( parseInt(obj.key))
@@ -97,6 +97,8 @@ function handleRequestForCheckLink(request,sendResponse){
           }
 
         });
+  } else {
+    console.log("Link does not appear to be from search")
   }
 }
 
