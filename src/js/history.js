@@ -86,6 +86,8 @@ function fetchSearchesFromIndexDB(offset,limit,callback){
             item.showLinkedList = false;
           }),'day');
 
+          // data == [{ id: 4, query: "a search", ts: 1468926651083, openedLinks: [{link: "www.google.com", title: "Google"} }, ...]
+
           callback(null,data);
           return;
       }

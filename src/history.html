@@ -12,6 +12,7 @@
     <link rel="stylesheet" href="css/animate.css">
   </head>
   <body >
+    <!-- #app for vue.js to use -->
     <div id="app">
           <nav>
             <ul class="nav-left">
@@ -32,7 +33,7 @@
           </section>
 
           <search-component v-show="searchTabIsActive"></search-component>
-          
+
     </div>
 
     <template id="searches">
@@ -53,7 +54,7 @@
                     <span class="time">{{ item.time }}</span>
                     <span class="query">{{ item.query }}</span>
                     <span class="link_count">{{ item.openedLinks.length }}</span>
-                    <a href="#" @click.prevent="toggleShowLinkedList(item)" 
+                    <a href="#" @click.prevent="toggleShowLinkedList(item)"
                     class="btn-down show-links">
                     <span class="fa fa-chevron-down" :class="{'fa-chevron-up': item.showLinkedList,'fa-chevron-down': !item.showLinkedList}"></span>
                      </a>
@@ -64,10 +65,10 @@
                         <a href="{{ link.link }}" class="url">{{ link.link }}</a>
                       </li>
                     </ul>
-                    
+
                   </li>
 
-                  
+
                 </ul>
               </li>
 
