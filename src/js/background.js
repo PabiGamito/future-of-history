@@ -73,6 +73,7 @@ function handleRequestForLogLinks(request,sendResponse){
 function handleRequestForCheckLink(request,sendResponse){
   if( obj = isSearchQueryUrl(request.href) && request.referrer.match(/google.[a-z\.]/g) ){
     console.log("Link appear to be from search")
+    sendResponse({result: true})
      DB.searches
         .where('id')
         .equals( parseInt(obj.key))
@@ -92,7 +93,6 @@ function handleRequestForCheckLink(request,sendResponse){
             DB.searches.update(obj.key,data)
 
             console.log("Clicked link", link, "added to database. Record saved", data)
-            sendResponse({saved: true})
 
           }
 

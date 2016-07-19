@@ -92,7 +92,9 @@ chrome.runtime.sendMessage(
       referrer: document.referrer
     },
     function(response) {
-
+      if (response.result) {
+        console.log("Current opened page assumed to be opened from a search and saved in database to matching search query record")
+      }
     }
 );
 
