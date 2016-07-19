@@ -89,6 +89,7 @@ function handleRequestForCheckLink(request,sendResponse){
             DB.searches.update(obj.key,data)
 
             console.log("Clicked link", link, "added to database. Record saved", data)
+            sendResponse({saved: true})
 
           }
 

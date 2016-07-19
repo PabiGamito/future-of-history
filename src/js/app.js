@@ -36,18 +36,19 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
 
       var $searchLinks = $('#rso .r a')
 
+      console.log("Attempting to add all search links to array", $searchLinks)
       $searchLinks.each(function(index,value){
         var url = $(value).attr('data-href');
         if (!url) {
           url = $(value).attr('href')
         }
+        console.log("Pushing search link", url, "to arr")
         SearchQueryUrls.push({
           title: $(value).text(),
           link: url,
           url: url,
           key: key
         });
-        console.log("url", url, "tite", $(value).text(), "key", key, "arr", SearchQueryUrls)
 
       });
 
@@ -73,7 +74,9 @@ if(window.location.href.match(/www.google.[a-z\.]+\/search/g) || window.location
         links: SearchQueryUrls
       },
       function(response) {
-
+        if (response.saved) {
+          console.log("Saved link as seached for link")
+        }
       });
     }
   )
