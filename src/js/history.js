@@ -1,3 +1,4 @@
+// The filter function takes a value as the argument and returns the transformed value
 Vue.filter('format_time', function (ts) {
   return moment.unix(ts/1000).calendar()
 })
@@ -27,6 +28,7 @@ var SearchesComponent = {
         }
 
         _self.searches = items;
+        console.log(_self.searches)
 
       });
 
@@ -47,14 +49,17 @@ var SearchesComponent = {
 
 new Vue({
     el: '#app',
+    // Data can be displayed and modified
     data: {
       'active_tab': 'visited'
     },
+    // Methods run when called by vue.js (ex: on button click)
     methods: {
       activateTab: function(name){
         this.active_tab = name;
       }
     },
+    // Components are custom elements that Vue.js’ compiler would attach specified behavior to
     components: {'search-component': SearchesComponent},
     computed: {
       searchTabIsActive: function(){
